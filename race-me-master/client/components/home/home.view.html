@@ -1,0 +1,136 @@
+<navigation></navigation>
+<div class="container">
+    <div ng-if="!vm.isLoggedIn">
+        <div class="jumbotron">
+            <h2><i class="ion-locations"></i> RaceMe!</h2>
+            <p>Leave a footprint for challenge</p>
+            <p>
+                <a class="btn btn-lg btn-success" href="/login"><i class="ion-log-in"></i> Log in</a>
+                <a class="btn btn-lg btn-primary" href="/register"><i class="ion-person-add"></i> Create account</a>
+            </p>
+        </div>
+    </div>
+
+    <div ng-if="vm.isLoggedIn && !vm.hasHealth">
+        <div class="jumbotron">
+            <h2><i class="ion-locations"></i> RaceMe!</h2>
+            <p>You need to download our app and upload data!</p>
+
+        </div>
+    </div>
+</div>
+
+<div ng-if="!vm.loadedData && vm.isLoggedIn && vm.hasHealth">
+    <loading></loading>
+</div>
+<div ng-if="vm.isLoggedIn && vm.hasHealth && vm.loadedData" class="panel panel-default weather">
+
+
+
+    <div class="panel-body grayColor">
+
+        <uib-accordion id="hideWeatherTable">
+          <div uib-accordion-group>
+            <uib-accordion-heading>
+              <div>CLICK TO SHOW WEATHER</div>
+            </uib-accordion-heading>
+            <uib-accordion>
+              <div class="row-fluid boxes">
+                <div uib-accordion-group class="box"
+                    ng-repeat="weather in weatherWUG.forecast.simpleforecast.forecastday|limitTo: 6"
+                    ng-init="outterIndex = $index * 2">
+                    <uib-accordion-heading>
+                      <p><img src="{{weather.icon_url}}"> {{ convertToDate(weather.date.epoch) | date: 'MMM d' }} </p>
+                      <p>{{weather.high.fahrenheit}}&deg; <span class="lowOpacity">{{weather.low.fahrenheit}}&deg;</span> </p>
+                      <p><i class="ion-waterdrop"></i> {{weather.pop}}%</p>
+                      <p>{{weather.conditions}}</p>
+                    </uib-accordion-heading>
+
+                    <div ng-repeat="weather in weatherWUG.forecast.txt_forecast.forecastday|limitTo: 2:outterIndex">
+                      <p><strong>{{weather.title}}</strong></p>
+                      <p><small>{{weather.fcttext}}</small></p>
+                    </div>
+                </div>
+              </div>
+            </uib-accordion>
+          </div>
+        </uib-accordion>
+
+        <uib-accordion id="hideMultWeatherTable">
+          <div class="row-fluid boxes">
+            <div uib-accordion-group class="box"
+                ng-repeat="weather in weatherWUG.forecast.simpleforecast.forecastday|limitTo: 6"
+                ng-init="outterIndex = $index * 2">
+                <uib-accordion-heading>
+                  <p><img src="{{weather.icon_url}}"> </p>
+                  <p>{{ convertToDate(weather.date.epoch) | date: 'MMM d' }} </p>
+                  <p>{{weather.high.fahrenheit}}&deg; <span class="lowOpacity">{{weather.low.fahrenheit}}&deg;</span> </p>
+                  <p><i class="ion-waterdrop"></i> {{weather.pop}}%</p>
+                  <p>{{weather.conditions}}</p>
+                </uib-accordion-heading>
+
+                <div ng-repeat="weather in weatherWUG.forecast.txt_forecast.forecastday|limitTo: 2:outterIndex">
+                  <p><strong>{{weather.title}}</strong></p>
+                  <p><small>{{weather.fcttext}}</small></p>
+                </div>
+            </div>
+          </div>
+        </uib-accordion>
+
+
+        <div class="row">
+          <div class="col-md-4 col-sm-4">
+            <form role="form">
+                <div class="form-group mySelect">
+                    <label for="mySelect"> Select Month </label>
+                    <select class="mySelect" name="mySelect" id="mySelect"
+                            ng-options="month.name for month in data.availableMonth track by month.id"
+                            ng-model="data.selectedMonth" ng-change="update()"></select>
+                </div>
+            </form>
+          </div>
+          <div class="col-md-4 col-sm-4">
+              <div class="grayShadowBox text-center">
+                  <p class="twoWeeksDown" ng-if="twoWeeks < 0"><i class="ion-arrow-down-a"></i> {{negTwoWeeks}}%</p> <span ng-if="twoWeeks < 0">less</span>
+                  <p class="twoWeeksUp" ng-if="twoWeeks > 0"><i class="ion-arrow-up-a"></i> {{twoWeeks}}%</p> <span ng-if="twoWeeks > 0">more</span>
+                  active than last week
+              </div>
+          </div>
+          <div class="col-md-2 col-sm-2">
+            <div class="grayShadowBox text-center">
+              <p>{{currentCalYes}}</p>
+              <div class="twoWeeksDown">
+                {{caloriesYesterday}} Calories <i class="ion-ios-flame"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-2">
+            <div class="grayShadowBox text-center">
+              <p> {{currentCalTod}} </p>
+              <div class="twoWeeksDown">
+                {{caloriesToday}} Calories <i class="ion-ios-flame"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+              <div class="grayShadowBox">
+                <highchart config="calenderChart"></highchart>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="grayShadowBox">
+                <highchart config="areaChart"></highchart>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="grayShadowBox">
+                <highchart config="activityChart"></highchart>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer-generic></footer-generic>
